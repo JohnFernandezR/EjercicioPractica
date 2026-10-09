@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
+import java.util.Optional;
+
 @Service
 public class TaskService {
     protected final Map<Long, Task> tasks = new ConcurrentHashMap<>();
@@ -51,5 +53,14 @@ public class TaskService {
         }
 
         return resultado;
+    }
+
+    public Optional<Task> completeTask(Long id) {
+        Task task = tasks.get(id);
+        if (task != null) {
+            task.setCompletada(true);
+            return Optional.of(task);
+        }
+        return Optional.empty(); 
     }
 }
