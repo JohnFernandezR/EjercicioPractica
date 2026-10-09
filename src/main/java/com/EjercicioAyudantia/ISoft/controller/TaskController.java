@@ -34,4 +34,12 @@ public class TaskController {
                 taskService.getTasks(prioridad, titulo, fechaLimite)
         );
     }
+
+    @PatchMapping("/{id}/complete")
+    public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody Task task) {
+
+        task.setId(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(taskService.updateTask(task));
+    }
 }
