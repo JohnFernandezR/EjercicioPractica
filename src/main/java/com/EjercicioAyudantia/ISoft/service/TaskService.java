@@ -13,7 +13,8 @@ import java.util.concurrent.atomic.AtomicLong;
 public class TaskService {
     protected final Map<Long, Task> tasks = new ConcurrentHashMap<>();
     protected final AtomicLong idGenerator = new AtomicLong(1);
-    private  Long taskId;
+    private Long taskId= 1l;
+
 
     public Task createTask(Task task) {
         task.setId(idGenerator.getAndIncrement());
