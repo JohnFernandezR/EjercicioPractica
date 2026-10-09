@@ -1,7 +1,10 @@
-package com.EjercicioAyudantia.ISoft;
+package com.EjercicioAyudantia.ISoft.service;
 
-import com.EjercicioAyudantia.model.Task;
+import com.EjercicioAyudantia.ISoft.model.Task;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -16,5 +19,37 @@ public class TaskService {
         task.setCompletada(false);
         tasks.put(task.getId(), task);
         return task;
+    }
+
+    public List<Task> getTasks(
+            String prioridad,
+            String titulo,
+            String fechaLimite) {
+
+        List<Task> resultado = new ArrayList<>();
+        
+        for (Task task : tasks.values()) {
+
+            if (prioridad != null
+                    && !prioridad.equalsIgnoreCase(task.getPrioridad())) {
+                continue;
+            }
+
+            if (titulo != null
+                    && (task.getTitulo() == null
+                    || !task.getTitulo().toLowerCase()
+                    .contains(titulo.toLowerCase()))) {
+                continue;
+            }
+
+            if (fechaLimite != null
+                    && !fechaLimite.equals(task.getFechaLimite())) {
+                continue;
+            }
+
+            resultado.add(task);
+        }
+
+        return resultado;
     }
 }
