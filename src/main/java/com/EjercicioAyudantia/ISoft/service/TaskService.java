@@ -14,6 +14,12 @@ public class TaskService {
     protected final Map<Long, Task> tasks = new ConcurrentHashMap<>();
     protected final AtomicLong idGenerator = new AtomicLong(1);
 
+    public Task createTask(Task task) {
+        task.setId(idGenerator.getAndIncrement());
+        task.setCompletada(false);
+        tasks.put(task.getId(), task);
+        return task;
+    }
 
     public List<Task> getTasks(
             String prioridad,
@@ -21,8 +27,8 @@ public class TaskService {
             String fechaLimite) {
 
         List<Task> resultado = new ArrayList<>();
-
-        for (Task task : resultado) {
+        
+        for (Task task : tasks.values()) {
 
             if (prioridad != null
                     && !prioridad.equalsIgnoreCase(task.getPrioridad())) {
