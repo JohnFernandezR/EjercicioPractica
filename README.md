@@ -1,4 +1,64 @@
 # Lab: Pipeline DevOps con GitFlow y Docker
+
+## Ejecutar el proyecto
+
+Se utiliza el proyecto de la raíz, con Java 21. No se requiere base de datos.
+
+El archivo `.env` configura `APP_NAME`, `SERVER_PORT` y `LOG_LEVEL`. Para una
+nueva copia del repositorio, créalo a partir de `.env.example`:
+
+```powershell
+Copy-Item .env.example .env
+.\mvnw.cmd spring-boot:run
+```
+
+En Linux/macOS:
+
+```bash
+cp .env.example .env
+sh ./mvnw spring-boot:run
+```
+
+Spring Boot carga el `.env` al ejecutar desde la raíz. Usa valores simples
+`CLAVE=valor`, sin comillas ni `export`. Las variables del sistema tienen
+prioridad sobre el archivo. Por defecto, la API está en
+`http://localhost:8080/tasks`.
+
+Con Docker Desktop iniciado y el `.env` creado:
+
+```bash
+docker compose up --build -d
+docker compose logs -f api
+docker compose down
+```
+
+Si cambias `SERVER_PORT`, Compose publica la API en ese mismo puerto.
+El `.env` se ignora en Git y se excluye del contexto de construcción Docker.
+
+## Pipeline configurado
+
+`.github/workflows/docker-publish.yml` construye la imagen y ejecuta las
+pruebas Maven dentro de la etapa de construcción, con Java 21. Se ejecuta en
+push y pull requests a `main` y `develop`, y permite ejecución manual.
+Solo publica en GHCR al ejecutar sobre `main` fuera de un pull request.
+Utiliza el `GITHUB_TOKEN` automático, sin configurar un token en `.env`.
+
+Las etiquetas publicadas son:
+
+- `ghcr.io/johnfernandezr/ejerciciopractica:latest`
+- `ghcr.io/johnfernandezr/ejerciciopractica:sha-<commit>`
+
+Para activar el pipeline, sube estos cambios al repositorio. En GitHub,
+verifica que Actions esté habilitado. Después de la primera publicación,
+cambia la visibilidad del paquete a **Public** en sus ajustes para cumplir
+con la entrega del laboratorio.
+
+Para comprobar las pruebas localmente:
+
+```powershell
+.\mvnw.cmd --batch-mode --no-transfer-progress verify
+```
+
 **Ingeniería de Software · 3er año · Ingeniería Informática**
 
 > **Modalidad:** Parejas · **Duración:** 60 minutos · **Entrega:** Repositorio GitHub público
